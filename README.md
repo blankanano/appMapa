@@ -10,10 +10,9 @@
 
 ### APP MAPA
 
-    * Projeto para contemplar a finalização da matéria.
-    * Este app foi desenvolvido para atender os requisitos do módulo de desenvolvimento frontend com react native e fornece nessa primeira versão um aplicativo, que carrega um mapa com a localização do usuário, e mais 2 marcadores. Ao clicar no botão da parte superior direita, apresenta um flatList com os marcadores e ao clicar no botão inferior, adiciona mais marcadores ao mapa.
-    * Gostaria de salientar que, por não conhecer a linguagem, tive muitas dificuldades para
-   entender e consequentemente aplicar o que foi lecionado, mas nada que o não pudesse pesquisar e atender o que foi pedido. Porém, gostei e pretendo buscar mais conhecimento e assim fazer um projeto melhor futuramente.
+  Projeto para contemplar a finalização da matéria.
+  Este app foi desenvolvido para atender os requisitos do módulo de desenvolvimento frontend com react native e fornece nessa primeira versão um aplicativo, que carrega um mapa com a localização do usuário, e mais 2 marcadores. Ao clicar no botão da parte superior direita, apresenta um flatList com os marcadores e ao clicar no botão inferior, adiciona mais marcadores ao mapa.
+  Gostaria de salientar que, por não conhecer a linguagem, tive muitas dificuldades para entender e consequentemente aplicar o que foi lecionado, mas nada que o não pudesse pesquisar e atender o que foi pedido. Porém, gostei e pretendo buscar mais conhecimento e assim fazer um projeto melhor futuramente.
 
 REPOSITÓRIO:
 https://github.com/blankanano/appMapa.git
