@@ -1,3 +1,34 @@
+<h1 align="center">Bem vindo ao APP MAPA 👋</h1>
+<p>
+  <img alt="Version" src="https://img.shields.io/badge/version-0.0.1-blue.svg?cacheSeconds=2592000" />
+  <a href="#" target="_blank">
+    <img alt="License: UNLICENSED" src="https://img.shields.io/badge/License-UNLICENSED-yellow.svg" />
+  </a>
+</p>
+
+> React-Native APP Mapa
+
+### APP MAPA
+
+    * Projeto para contemplar a finalização da matéria.
+    * Este app foi desenvolvido para atender os requisitos do módulo de desenvolvimento frontend com react native e fornece nessa primeira versão um aplicativo, que carrega um mapa com a localização do usuário, e mais 2 marcadores. Ao clicar no botão da parte superior direita, apresenta um flatList com os marcadores e ao clicar no botão inferior, adiciona mais marcadores ao mapa.
+    * Gostaria de salientar que, por não conhecer a linguagem, tive muitas dificuldades para
+   entender e consequentemente aplicar o que foi lecionado, mas nada que o não pudesse pesquisar e atender o que foi pedido. Porém, gostei e pretendo buscar mais conhecimento e assim fazer um projeto melhor futuramente.
+
+REPOSITÓRIO:
+https://github.com/blankanano/appMapa.git
+
+Professor:
+Alexandre Werneck Andreza
+
+Aluno
+Adriano da Silva
+
+<br/>
+<br/>
+<br/>
+<br/>
+
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
 # Getting Started
