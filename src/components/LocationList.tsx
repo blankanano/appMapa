@@ -13,7 +13,7 @@ export type Location = {
 type LocationListProps = {
   navigation: StackNavigationProp<any, any>;
   onSelectLocation: (location: Location) => void;
-  locations: Location[];  // Adicionado a propriedade locations
+  locations: Location[];
 };
 
 const LocationList: React.FC<LocationListProps> = ({ navigation, onSelectLocation, locations }) => {

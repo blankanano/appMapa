@@ -1,24 +1,31 @@
-// LocationCards.tsx
 import React from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { Location } from './LocationList';
 
 interface LocationCardsProps {
   locations: Location[];
-  userLocation?: Location | null; // Adicione userLocation como uma propriedade opcional
+  userLocation?: Location | null;
+  onLocationPress: (location: Location) => void;
   onClose: () => void;
 }
 
-const LocationCards: React.FC<LocationCardsProps> = ({ locations, userLocation, onClose }) => {
+const LocationCards: React.FC<LocationCardsProps> = ({ locations, userLocation, onLocationPress, onClose }) => {
   const allLocations = userLocation ? [userLocation, ...locations] : locations;
 
   return (
     <View style={styles.container}>
       <FlatList
         data={allLocations}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={(item) => item.title}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.card} onPress={() => console.log('Card clicked:', item.title)}>
+          <TouchableOpacity
+            style={styles.card}
+            onPress={() => {
+              console.log('Localização selecionada:', item);
+              onLocationPress && onLocationPress(item);
+              onClose();
+            }}
+          >
             <Text>{item.title}</Text>
             <Text>{`Latitude: ${item.latitude}`}</Text>
             <Text>{`Longitude: ${item.longitude}`}</Text>

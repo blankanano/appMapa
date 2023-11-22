@@ -1,27 +1,36 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import { PERMISSIONS, request } from 'react-native-permissions';
-import { Location } from './LocationList';
-import { useNavigation, useRoute } from '@react-navigation/native';  // Importe useRoute
+import { useNavigation, useRoute } from '@react-navigation/native';
 import LocationCards from './LocationCards';
-import { MapComponentScreenRouteProp, AddLocationScreenRouteProp } from './types';
-import { marker } from '../data/Marker';
+import { AddLocationScreenRouteProp } from './types';
+import { LocationContext } from '../context/LocationContext';
 
 const MapComponent: React.FC = () => {
-  const [userLocation, setUserLocation] = useState<{title: string; latitude: number; longitude: number } | null>(null);
+  const { meusLocais, setMeusLocais } = useContext(LocationContext);
+  const [userLocation, setUserLocation] = useState<{ title: string; latitude: number; longitude: number } | null>(null);
   const [showLocationCards, setShowLocationCards] = useState(false);
   const navigation = useNavigation();
-  const route = useRoute<AddLocationScreenRouteProp>();  // Adicione o hook useRoute
+  const route = useRoute<AddLocationScreenRouteProp>();
+  const [region, setRegion] = useState({
+    latitude: 0,
+    longitude: 0,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  });
 
-  const [newLocation, setNewLocation] = useState<{ title: string; latitude: number; longitude: number } | null>(null);
-  // const [locations, setLocations] = useState<Location[]>([
-  //   { title: 'House Family', latitude: -25.464553919848772, longitude: -49.55269216179718 },
-  //   { title: 'RN Soccer e Beach Sports', latitude: -25.452727327632527, longitude: -49.534343804126514 },
-  // ]); 
-
-  const [locations, setLocations] = useState(marker); 
+  const addLocais = (newLocation: { title: string; latitude: number; longitude: number }) => {
+    setMeusLocais([
+      ...meusLocais,
+      {
+        title: newLocation.title,
+        latitude: newLocation.latitude,
+        longitude: newLocation.longitude,
+      },
+    ]);
+  };
 
   useEffect(() => {
     const requestLocationPermission = async () => {
@@ -30,10 +39,18 @@ const MapComponent: React.FC = () => {
         if (permission === 'granted') {
           Geolocation.getCurrentPosition(
             (position) => {
-              setUserLocation({
+              const userLocation = {
                 title: 'Minha localização',
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude,
+              };
+              addLocais(userLocation);
+              setUserLocation(userLocation);
+              setRegion({
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
               });
             },
             (error) => {
@@ -52,11 +69,6 @@ const MapComponent: React.FC = () => {
     requestLocationPermission();
   }, []);
 
-  const openLocationCards = () => {
-    console.log('Botão pressionado!');
-    setShowLocationCards(true);
-  };
-
   const openAddLocationScreen = () => {
     const routeParams: AddLocationScreenRouteProp = {
       onLocationAdded: handleLocationAdded,
@@ -64,11 +76,11 @@ const MapComponent: React.FC = () => {
 
     navigation.navigate('AddLocation', routeParams);
   };
-  
+
   const handleLocationAdded = (newLocation: { title: string; latitude: number; longitude: number }) => {
-    setLocations([...locations, newLocation]);
+    addLocais(newLocation);
     setShowLocationCards(false);
-  };  
+  };
 
   return (
     <View style={styles.container}>
@@ -76,22 +88,22 @@ const MapComponent: React.FC = () => {
         <React.Fragment>
           <MapView
             style={styles.map}
-            initialRegion={{
-              latitude: userLocation.latitude,
-              longitude: userLocation.longitude,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421,
-            }}
+            region={region}
+            onRegionChangeComplete={(newRegion) => setRegion(newRegion)}
           >
-            <Marker
-              title={userLocation.title}
-              coordinate={{
-                latitude: userLocation.latitude,
-                longitude: userLocation.longitude,
-              }}
-            />
+            {/* Marcador da localização do usuário */}
+            {userLocation && (
+              <Marker
+                title={userLocation.title}
+                coordinate={{
+                  latitude: userLocation.latitude,
+                  longitude: userLocation.longitude,
+                }}
+              />
+            )}
 
-            {locations.map((location, index) => (
+            {/* Marcadores para os locais */}
+            {meusLocais.map((location, index) => (
               <Marker
                 key={index}
                 title={location.title}
@@ -102,25 +114,31 @@ const MapComponent: React.FC = () => {
               />
             ))}
           </MapView>
-
-          <TouchableOpacity style={styles.menuButton} onPress={openLocationCards}>
-            <Text style={styles.menuButtonText}>☰</Text>
-          </TouchableOpacity>
-        </React.Fragment>          
+        </React.Fragment>
       )}
 
       {!userLocation && <Text>Aguardando permissão de localização...</Text>}
 
       {showLocationCards && (
         <LocationCards
-          locations={locations}
+          locations={meusLocais}
+          userLocation={userLocation}
+          onLocationPress={(location) => {
+            console.log('Localização pressionada: ', location);
+            setRegion({
+              latitude: location.latitude,
+              longitude: location.longitude,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            });
+          }}
           onClose={() => setShowLocationCards(false)}
         />
       )}
 
       {/* Botão de Adicionar Localização */}
       <TouchableOpacity style={styles.addButton} onPress={openAddLocationScreen}>
-        <Text style={styles.addButtonText}>Adicionar marker</Text>
+        <Text style={styles.addButtonText}>Adicionar localização</Text>
       </TouchableOpacity>
     </View>
   );
@@ -131,33 +149,17 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   map: {
-    width: '100%',
-    height: '95%',
+    flex: 1,
   },
-  menuButton: {
-    position: 'absolute',
-    top: 16,
-    right: 16,
-    padding: 8,
-    backgroundColor: 'blue',
-    borderRadius: 8,
-  },
-  menuButtonText: {
-    color: 'white',
-    fontSize: 20,
-  },
-  headerButton: {
-    marginRight: 16,
-    padding: 8,
-  },  
   addButton: {
     backgroundColor: 'green',
     height: 40,
-  },  
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   addButtonText: {
     color: 'white',
     fontSize: 18,
-    textAlign: 'center',
   },
 });
 
